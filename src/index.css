@@ -1,0 +1,20 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+.choix {
+  display: flex;
+  flex-direction: row;
+  width: 40%;
+  margin: auto;
+  justify-content: space-between;
+}
+
+.allImg {
+  display: flex;
+  width: 40%;
+  justify-content: space-between; 
+  margin: 70px auto;
+}
