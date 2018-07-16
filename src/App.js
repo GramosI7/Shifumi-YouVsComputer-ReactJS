@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import ChoixImg from "./ChoixImg";
 import Resultat from "./Resultat";
+import AllChoix from "./AllChoix";
 
 class App extends Component {
   constructor(props) {
@@ -11,27 +12,38 @@ class App extends Component {
       choix: ["rock", "paper", "scissors"],
       joueurMe: "",
       joueurNull: "",
-      decideWinner: ""
+      decideWinner: "",
+     counterMe : 0,
+     counterNull : 0
     }
   }
 
   choiceAdverse = () => {
-    this.setState({ joueurNull: this.state.choix[Math.floor(Math.ramdom() * 3)] })
+    this.setState({ joueurNull: this.state.choix[Math.floor(Math.random() * 3)] },() => {
+      this.decideWinner();
+      // console.log("adverse :", this.state.joueurNull)
+    })
   }
 
   click = (event) => {
-    this.setState({ joueurNull: this.state.choix[Math.floor(Math.random() * 3)] }, () => {
-      console.log("Moi : ", this.state.joueurMe);
-      console.log("joueurAdverse : ", this.state.joueurNull);
-      this.decideWinner();
+    
+    this.setState({joueurMe : event.currentTarget.name},() => {
+      // console.log("Moi : ",this.state.joueurMe);
+      
+      this.choiceAdverse();
+     
     })
+    // this.setState({ joueurNull: this.state.choix[Math.floor(Math.random() * 3)] }, () => {
+    //   console.log("Moi : ", this.state.joueurMe);
+    //   console.log("joueurAdverse : ", this.state.joueurNull);
+    // })
   }
 
   decideWinner = () => {
     //destructuration du state
     const { joueurMe, joueurNull } = this.state;
     //egalité
-    if (joueurNull == joueurMe) {
+    if (joueurMe === joueurNull) {
       return this.setState({ decideWinner: "Egalité !" })
     }
     //regle shifumi pour joueurNull
@@ -39,28 +51,32 @@ class App extends Component {
       (joueurNull === "paper" && joueurMe === "rock") ||
       (joueurNull === "scissors" && joueurMe === "paper")
     ) {
-      return this.setState({ decideWinner: "Vous avez perdu!" })
+      return this.setState({ decideWinner: "Vous avez perdu !" },() => {
+        this.setState({counterNull : this.state.counterNull +1})
+      });
+
     } else //si cas different = player blue win
-      return this.setState({ decideWinner: "Vous avez gagné !" })
+      return this.setState({ decideWinner: "Vous avez gagné !"},() => {
+        this.setState({counterMe : this.state.counterMe +1})
+      });
   }
 
-  returnPhoto = () => {
 
-  }
 
   render() {
     return (
       <div className="App">
         <h1>SHIFUMI</h1>
         <div className="allImg">
-          <img onClick={() => this.setState({ joueurMe: "rock" }, () => this.click())} src="./img/rock.png" alt="" />
-          <img onClick={() => this.setState({ joueurMe: "paper" }, () => this.click())} src="./img/paper.png" alt="" />
-          <img onClick={() => this.setState({ joueurMe: "scissors" }, () => this.click())} src="./img/scissors.png" alt="" />
+        {this.state.choix.map((element, index) => {
+          return <AllChoix  function={this.click} key={index} img={element}/>
+        })}
         </div>
+       
 
         <div className="choix">
-          <ChoixImg choix={this.state.joueurMe} nom={"Vous"} />
-          <ChoixImg choix={this.state.joueurNull} nom={"Adversaire"} />
+          <ChoixImg counter={this.state.counterMe} choix={this.state.joueurMe} nom={"Vous"} />
+          <ChoixImg counter={this.state.counterNull} choix={this.state.joueurNull} nom={"Adversaire"} />
         </div>
 
         <div>
@@ -72,3 +88,4 @@ class App extends Component {
 }
 
 export default App;
+ 
